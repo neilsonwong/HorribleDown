@@ -29,7 +29,22 @@ async function ripCurrentFromPage(page){
 		let $ = cheerio.load(page);
 		let indShowDivs = $(".ind-show").toArray();
 		return indShowDivs.map((div) => {
-			if (div.attribs.class.indexOf("linkful") > 0){
+			//always linkful now yay!
+			if (div.children[0]){
+				if (div.children[0].attribs){
+					return div.children[0].attribs.title;
+				}
+				else {
+					console.log('weird case');
+					console.log(JSON.stringify(div.children[0].attribs));
+				}
+			}
+			else {
+				console.log("no a href child in ind-show");
+			}
+
+			//old page style code, leave in case horriblesubs reverts in the future
+			/* if (div.attribs.class.indexOf("linkful") > 0){
 				//this is linkful, rip from title
 				return div.children[0].attribs.title;
 			}
@@ -39,7 +54,7 @@ async function ripCurrentFromPage(page){
 			}
 			else {
 				console.log("unhandled div in rip current");
-			}
+			}*/
 		});
 	}
 	catch(e){
