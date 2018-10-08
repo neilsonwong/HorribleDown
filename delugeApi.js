@@ -3,7 +3,7 @@
 const exec = require('child_process').exec;
 
 let COMMANDS = {
-	'INFO': `deluge-console 'info'`
+	'INFO': `deluge-console 'info'`,
 	'ADD': (magnetLink) => (`deluge-console "add '${magnetLink}'"`),
 	'RM': (torrentId) => (`deluge-console "rm '${torrentId}'"`)
 };
@@ -34,10 +34,11 @@ async function getCompletedTorrents(){
 };
 
 async function removeCompletedTorrents(){
-	let done = getCompletedTorrents();
+	let done = await getCompletedTorrents();
 	for (let i = 0; i < done.length; ++i){
 		try {
 			await exec(COMMANDS.RM(done[i].id));
+			console.log(`removed ${done[i].name}`);
 		}
 		catch (e){
 			console.log(e);
@@ -89,5 +90,5 @@ function TorrentState(name, id, state, completion) {
 
 module.exports = {
 	getCompletedTorrents: getCompletedTorrents,
-	removeCompletedTorrents: 
+	removeCompletedTorrents: removeCompletedTorrents
 };
