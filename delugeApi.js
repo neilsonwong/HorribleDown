@@ -57,17 +57,19 @@ function parseDelugeInfo(infoString){
 		if (lines[i].startsWith('Name: ') && 
 			lines[i+1].startsWith('ID: ') &&
 			lines[i+2].startsWith('State: ') &&
-			lines[i+4].startsWith('Size: ')){	//size is completion
+			lines[i+4].startsWith('Size: ') && 
+			lines[i+5].startsWith('Seed time: ')){	//size is completion
 
 			let name = lines[i].substring(6),
 				id = lines[i+1].substring(4),
 				state = lines[i+2].substring(7),
-				completion = lines[i+4].substring(6);
+				completion = lines[i+4].substring(6),
+				seedTime = lines[i+4].substring(6);
 
-			torrents.push(new TorrentState(name, id, state, completion));
+			torrents.push(new TorrentState(name, id, state, completion, seedTime));
 
-			//increment by 5 to skip the things we used
-			i += 5;
+			//increment by 6 to skip the things we used
+			i += 6;
 		}
 		else {
 			++i;
@@ -77,15 +79,20 @@ function parseDelugeInfo(infoString){
 	return torrents;
 }
 
-function TorrentState(name, id, state, completion) {
+function TorrentState(name, id, state, completion, seedTime) {
 	this.name = name;
 	this.id = id;
 	this.state = state;
 
+	//get seedTime
+	let seedTimeStart = seedTime.indexOf('days');
+	let seededFor = seedTime.substring(seedTimeStart + 5, seedTimeStart + 13);
+	let seededMoreThanOneMinute = seededFor > "00:01:00";
+
 	//get size and completeness
 	let temp = completion.split('/');
 	this.size = temp[0];
-	this.isCompleted = temp[1].startsWith(this.size);
+	this.isCompleted = temp[1].startsWith(this.size) && seededMoreThanOneMinute;
 }
 
 module.exports = {
