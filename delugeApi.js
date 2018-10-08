@@ -4,8 +4,8 @@ const exec = require('child_process').exec;
 
 let COMMANDS = {
 	'INFO': `deluge-console 'info'`
-	// 'ADD': `deluge-console "add '${magnetLink}'"`,
-	// 'RM': `deluge-console "rm '${torrentId}'"`
+	'ADD': (magnetLink) => (`deluge-console "add '${magnetLink}'"`),
+	'RM': (torrentId) => (`deluge-console "rm '${torrentId}'"`)
 };
 
 async function delugeInfo(){
@@ -25,14 +25,25 @@ async function getCompletedTorrents(){
 	try {
 		let infos = await delugeInfo();
 		let torrents = parseDelugeInfo(infos);
-		return torrents;
-
+		return torrents.filter(torrent => torrent.isCompleted);
 	}
 	catch (e){
 		console.log(e);
 		return [];
 	}
 };
+
+async function removeCompletedTorrents(){
+	let done = getCompletedTorrents();
+	for (let i = 0; i < done.length; ++i){
+		try {
+			await exec(COMMANDS.RM(done[i].id));
+		}
+		catch (e){
+			console.log(e);
+		}
+	}
+}
 
 function parseDelugeInfo(infoString){
 
@@ -77,5 +88,6 @@ function TorrentState(name, id, state, completion) {
 }
 
 module.exports = {
-	getCompletedTorrents: getCompletedTorrents
+	getCompletedTorrents: getCompletedTorrents,
+	removeCompletedTorrents: 
 };
