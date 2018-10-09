@@ -46,6 +46,19 @@ async function removeCompletedTorrents(){
 	}
 }
 
+async function downloadTorrent(magnetLink){
+	return new Promise((res, rej) => {
+		exec(COMMANDS.ADD(magnetLink), (error, stdout, stderr) => {
+			if (error) {
+				rej(error);
+			}
+			if (stdout){
+				res(stdout);
+			}
+		});
+	});
+}
+
 function parseDelugeInfo(infoString){
 
 	let lines = infoString.split('\n');
@@ -98,5 +111,6 @@ function TorrentState(name, id, state, completion, seedTime) {
 
 module.exports = {
 	getCompletedTorrents: getCompletedTorrents,
-	removeCompletedTorrents: removeCompletedTorrents
+	removeCompletedTorrents: removeCompletedTorrents,
+	downloadTorrent: downloadTorrent
 };
