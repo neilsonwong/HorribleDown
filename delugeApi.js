@@ -64,7 +64,7 @@ function parseDelugeInfo(infoString){
 				id = lines[i+1].substring(4),
 				state = lines[i+2].substring(7),
 				completion = lines[i+4].substring(6),
-				seedTime = lines[i+4].substring(6);
+				seedTime = lines[i+5].substring(6);
 
 			torrents.push(new TorrentState(name, id, state, completion, seedTime));
 
@@ -83,6 +83,7 @@ function TorrentState(name, id, state, completion, seedTime) {
 	this.name = name;
 	this.id = id;
 	this.state = state;
+	this.seedTimeInfo = seedTime;
 
 	//get seedTime
 	let seedTimeStart = seedTime.indexOf('days');
