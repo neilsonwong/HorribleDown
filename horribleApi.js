@@ -7,16 +7,32 @@ const request = require('request-promise-native');
 const parseString = require('xml2js').parseString;
 
 const config = require('./config');
+const cache = {};	//lazy use a non persistent in memory cache
 
 async function getCurrentShows(){
 	try {
-		let response = config.DEV_MODE ? 
-			fs.readFileSync("current.html") : 
-			await request.get(config.CURRENT_SHOWS_URL);
+		//try cache first
+		if (cache.currentShows !== undefined && 
+			cache.currentShows.retrievalDate &&
+			(Date.now() - cache.currentShows.retrievalDate) < 86400000){	//within 1 day
+			console.log('YES used DA cache for getCurrentShows');
+			return cache.currentShows;
+		}
+		else {
+			let response = config.DEV_MODE ? 
+				fs.readFileSync("current.html") : 
+				await request.get(config.CURRENT_SHOWS_URL);
 
-		//parse the response
-		let currentShows = await ripCurrentFromPage(response);
-		return currentShows;
+			//parse the response
+			let currentShows = await ripCurrentFromPage(response);
+
+			//update cache
+			cache.currentShows = {
+				retrievalDate: Date.now(),
+				data: currentShows
+			};
+			return cache.currentShows;
+		}
 	}
 	catch(e){
 		console.log(e);
@@ -114,8 +130,58 @@ function parseXml(xml){
 	});
 }
 
+//prolly shouldn't be in here but it's 1am and i'm lazy
+async function getCurrentSeason(){
+	await loadFollowing();
+	let currentShows = await getCurrentShows();
+
+	let mySeason = currentShows.data.map(show => {
+		return {
+			title: show,
+			following: cache.following.includes(show)
+		};
+	});
+	return mySeason;
+}
+
+async function loadFollowing(){
+	//load following file
+	if (cache.following === undefined){
+		let following = await readFollowingFile();
+		cache.following = following;
+	}
+}
+
+async function updateFollowing(updated){
+	await loadFollowing();
+	//update the cache with our values
+	cache.following = updated;
+	fs.writeFileSync('following.json', JSON.stringify(cache.following, 0, 2));
+}
+
+async function readFollowingFile(){
+	return new Promise((res) => {
+		let gibberish = fs.readFile('following.json', (err, data) => {
+			if (err) {
+				res({});
+			}
+
+			let following = {};
+			try {
+				following = JSON.parse(data);
+			}
+			catch(e){}
+
+			res(following);
+		});
+	});
+}
+
+
 module.exports = {
-	"getCurrentShows": getCurrentShows,
-	"getRssFeed": getRssFeed,
-	"getFilteredMagnets": getFilteredMagnets
+	'getCurrentShows': getCurrentShows,
+	'getRssFeed': getRssFeed,
+	'getFilteredMagnets': getFilteredMagnets,
+	'getCurrentSeason': getCurrentSeason,
+	'updateFollowing': updateFollowing
 };

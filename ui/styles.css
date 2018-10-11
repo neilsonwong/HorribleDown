@@ -1,0 +1,108 @@
+/* i suck at ui so i just copied the look from HS lol, considering this is a horrible downloader */
+body {
+	margin: 0;
+	font-family: 'Open Sans', serif;
+	background-color: #F2F2F2;
+}
+
+ul {
+	margin: 0;
+	padding: 0;
+}
+
+li {
+	list-style: none;
+}
+
+.topbar {
+	background-color: #363636;
+	padding: 0 20px;
+	box-shadow: 1px 1px 4px #CCCCCC;
+}
+
+.woah-the-colours {
+	margin: 0;
+	padding: 15px;
+	margin: 10px 0;
+
+	/* colours */
+	background-image: -webkit-gradient( linear, left top, right top, color-stop(0, #f22), color-stop(0.15, #f2f), color-stop(0.3, #22f), color-stop(0.45, #2ff), color-stop(0.6, #2f2),color-stop(0.75, #2f2), color-stop(0.9, #ff2), color-stop(1, #f22) ) !important;
+	color: transparent !important;
+    -webkit-background-clip: text;
+
+	display: inline-block;
+}
+
+.season-listing {
+	width: 50%;
+	margin: 20px auto;
+	background-color: #FFFFFF;
+	box-shadow: 1px 1px 4px #CCCCCC;
+}
+
+.season-name {
+	color: #DA4453;
+	font-weight: 700;
+	padding: 20px;
+	margin: 0;
+}
+
+.show {
+	padding: 5px 20px;
+	border-bottom: 1px solid #F2F2F2;
+	font-size: 15px;
+	line-height: 18px;
+}
+
+.show > span {
+	vertical-align: middle;
+}
+
+.show .actionable {
+	float: right;
+	background-color: transparent;
+	border: none;
+	padding: 0;
+	line-height: 22px;
+	font-size: 15px;
+}
+
+.show .actionable:hover {
+	cursor: pointer;
+	font-weight: 700;
+}
+
+.add {
+	color: green;
+}
+
+.remove {
+	color: red;
+}
+
+.following {
+	background: #EEFFDD;
+}
+
+.following:hover {
+	background-color: #D8F2C2;
+}
+
+.notFollowing:hover {
+	background-color: #FFF7FB;
+}
+
+.badge {
+	margin-left: 15px;
+	padding: 2px 7px;
+	color: #FFFFFF;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: middle;
+	box-sizing: border-box;
+	font-size: 9px;
+	font-weight: 600;
+	background-color: #C8C8C8;
+	font-style: italic;
+	display: inline-block;
+}
