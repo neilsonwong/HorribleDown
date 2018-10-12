@@ -150,6 +150,7 @@ async function loadFollowing(){
 		let following = await readFollowingFile();
 		cache.following = following;
 	}
+	return cache.following;
 }
 
 async function updateFollowing(updates){
@@ -199,5 +200,6 @@ module.exports = {
 	'getRssFeed': getRssFeed,
 	'getFilteredMagnets': getFilteredMagnets,
 	'getCurrentSeason': getCurrentSeason,
-	'updateFollowing': updateFollowing
+	'updateFollowing': updateFollowing,
+	'getFollowing': loadFollowing
 };
