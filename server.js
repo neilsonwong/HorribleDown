@@ -34,8 +34,8 @@ app.get('/currentSeason', async (req, res) => {
 });
 
 app.put('/updateFollowing', async (req, res) => {
+	console.log(req.body);
 	await horribleApi.updateFollowing(req.body);
-	res.json(following);
 });
 
 

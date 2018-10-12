@@ -152,10 +152,26 @@ async function loadFollowing(){
 	}
 }
 
-async function updateFollowing(updated){
+async function updateFollowing(updates){
 	await loadFollowing();
+
 	//update the cache with our values
-	cache.following = updated;
+	for (let show in updates){
+		if (updates[show] === true){
+			//add the show if it's not there
+			if (!cache.following.includes(show)){
+				cache.following.push(show);
+			}	
+		}
+		else if (updates[show] === false){
+			//remove item
+			let index = cache.following.indexOf(show);
+			if (index > -1) {
+				//try to remove it if it exists
+				cache.following.splice(index, 1);
+			}
+		}
+	}
 	fs.writeFileSync('following.json', JSON.stringify(cache.following, 0, 2));
 }
 

@@ -57,22 +57,39 @@ Vue.component('seasonlisting', {
 
 Vue.component('show', {
 	props: ['data'],
-	data: function(){
-		return {
-			classObj: {
+	computed: {
+		classObj() {
+			return {
 				following: this.data.following,
 				'notFollowing': !this.data.following
-			},
-			buttonText: this.data.following ? '▼': '▲',
-			buttonClass: this.data.following ? 'remove': 'add'
-		}
+			};
+		},
+		buttonText(){ return this.data.following ? 'remove_circle': 'add_circle'; },
+		buttonClass() { return this.data.following ? 'remove': 'add'; }
 	},
 	template: `
 	<div class="show" v-bind:class="classObj">
 		<span>{{ data.title }}</span>
 		<span v-if="data.following" class="badge">watching</span>
-		<button class="actionable" v-bind:class="buttonClass">{{ buttonText }}</button>
-	</div>`
+		<button class="actionable" v-bind:class="buttonClass" v-on:click="updateCurrentSeason(buttonClass, data.title)">
+			<i class="material-icons">{{ buttonText }}</i>
+		</button>
+	</div>`,
+	methods: {
+		updateCurrentSeason: function(change, value){
+			let diff = {};
+			if (change === 'add') {
+				this.data.following = true;
+				diff[value] = true;
+				updateFollowing(diff);
+			}
+			else if (change === 'remove'){
+				this.data.following = false;
+				diff[value] = false;
+				updateFollowing(diff);
+			}
+		}
+	}
 });
 
 
@@ -88,40 +105,19 @@ function getCurrentSeason(){
 				return 1;
 			}
 			else {
-				return a.title > b.title;
+				return a.title > b.title ? 1 : -1;
 			}
 		}));
 }
 
-function updateFollowing(updatedList){
+function updateFollowing(updatedChanges){
 	//fire and forget for now? tehe?
+	console.log(updatedChanges)
 	return fetch('updateFollowing', {
 		method: 'PUT',
-		body: updatedList
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify(updatedChanges)
 	});
 }
-
-/*
-$(async function(){
-	//main entry point when page starts
-	let currentSeason;
-	let selected;
-
-	currentSeason = await getCurrentSeason();
-	console.log(currentSeason)
-	following = await getFollowing();
-	console.log(following)
-
-	$('#root').append(currentSeason).append(following);
-});
-
-
-function updateFollowing(){
-	// return new Promise(res => {
-	// 	//aparently jquery gets fail silently now
-	// 	$.put('updateFollowing', data => {
-	// 		res(data);
-	// 	});
-	// });
-}
-*/

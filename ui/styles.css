@@ -30,11 +30,14 @@ li {
 	color: transparent !important;
     -webkit-background-clip: text;
 
+    font-weight: 600;
+
 	display: inline-block;
 }
 
 .season-listing {
 	width: 50%;
+	min-width: 700px;
 	margin: 20px auto;
 	background-color: #FFFFFF;
 	box-shadow: 1px 1px 4px #CCCCCC;
@@ -74,10 +77,17 @@ li {
 
 .add {
 	color: green;
+	opacity: 0.5;
 }
 
 .remove {
 	color: red;
+	opacity: 0.5;
+}
+
+.add:hover, 
+.remove:hover {
+	opacity: 1;
 }
 
 .following {
