@@ -1,8 +1,8 @@
 {
 	"DEV_MODE": false,
 	"UI_PORT": 3999,
-	"CURRENT_SHOWS_URL": "http://horriblesubs.info/current-season/",
-	"RSS_FEED_URL": "http://horriblesubs.info/rss.php?res=720",
+	"CURRENT_SHOWS_URL": "https://horriblesubs.info/current-season/",
+	"RSS_FEED_URL": "https://horriblesubs.info/rss.php?res=720",
 	"MAIN_LOOP_INTERVAL": 20000,
 	"DB_PATH": "./database.db"
 }
