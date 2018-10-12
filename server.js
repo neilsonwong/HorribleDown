@@ -38,7 +38,12 @@ app.put('/updateFollowing', async (req, res) => {
 	await horribleApi.updateFollowing(req.body);
 });
 
+function start(){
+	app.listen(config.UI_PORT, () => {
+		console.log(`server started on ${config.UI_PORT}`);
+	});
+}
 
-app.listen(config.UI_PORT, () => {
-	console.log(`server started on ${config.UI_PORT}`);
-});
+module.exports = {
+	start: start
+};
