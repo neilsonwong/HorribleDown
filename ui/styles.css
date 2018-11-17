@@ -18,6 +18,8 @@ li {
 	background-color: #363636;
 	padding: 0 20px;
 	box-shadow: 1px 1px 4px #CCCCCC;
+	display: flex;
+	justify-content: space-between;
 }
 
 .woah-the-colours {
@@ -33,6 +35,14 @@ li {
     font-weight: 700;
 
 	display: inline-block;
+}
+
+.right-button {
+	display: inline-block;
+	color: white;
+	font-weight: bold;
+	padding: 25px 5px;
+    margin: 10px 0;
 }
 
 .season-listing {
