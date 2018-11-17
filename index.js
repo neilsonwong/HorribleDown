@@ -15,13 +15,15 @@ async function main(){
 }
 
 async function mainLoop(){
-	let currentShows = await horribleApi.getCurrentShows();
+	console.log('looping');
+	console.log(process.memoryUsage().heapUsed);
+	let currentShows = await horribleApi.getFollowing();
 
 	//clear old torrents
 	await delugeApi.removeCompletedTorrents();
 
 	//check for new torrents to add
-	let magnets = await horribleApi.getFilteredMagnets(currentShows.data, config.RESOLUTION);
+	let magnets = await horribleApi.getFilteredMagnets(currentShows, config.RESOLUTION);
 
 	let notInCache;
 	for (let i = 0; i < magnets.length; ++i){

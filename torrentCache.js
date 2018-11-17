@@ -59,7 +59,7 @@ async function loadMagnetsFromDb(){
 			}
 
 			for (let i = 0; i < rows.length; i++) {
-				console.log(`adding to cache ${rows[i].magnet}`);
+				//console.log(`adding to cache ${rows[i].magnet}`);
 				cache.add(rows[i].magnet);
 			};
 

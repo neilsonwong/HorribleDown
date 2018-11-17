@@ -14,7 +14,7 @@ async function delugeInfo(){
 			if (error) {
 				rej(error);
 			}
-			if (stdout){
+			if (stdout !== null && stdout !== undefined){
 				res(stdout);
 			}
 		});
@@ -24,6 +24,10 @@ async function delugeInfo(){
 async function getCompletedTorrents(){
 	try {
 		let infos = await delugeInfo();
+		if (infos.length === 0){
+			console.log('no torrents in deluge info');
+			return [];
+		}
 		let torrents = parseDelugeInfo(infos);
 		return torrents.filter(torrent => torrent.isCompleted);
 	}
@@ -61,7 +65,6 @@ async function downloadTorrent(magnetLink){
 }
 
 function parseDelugeInfo(infoString){
-
 	let lines = infoString.split('\n');
 	let torrents = [];
 	let i = 0;
