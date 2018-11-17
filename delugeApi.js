@@ -48,6 +48,7 @@ async function removeCompletedTorrents(){
 
 async function downloadTorrent(magnetLink){
 	return new Promise((res, rej) => {
+		//run add command, wait for it to show up in downloading
 		exec(COMMANDS.ADD(magnetLink), (error, stdout, stderr) => {
 			if (error) {
 				rej(error);

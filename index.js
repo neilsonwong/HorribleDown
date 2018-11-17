@@ -25,10 +25,22 @@ async function mainLoop(){
 
 	let notInCache;
 	for (let i = 0; i < magnets.length; ++i){
-		notInCache = await torrentCache.addMagnet(magnets[i]);
-		if (notInCache === true) {
-			//we need to download this
-			delugeApi.downloadTorrent(magnets[i]);
+		//change logic structure
+		//check cache
+		if (torrentCache.inCache(magnets[i]) === false){
+			//not in cache
+			//add torrent
+			try {
+				await delugeApi.downloadTorrent(magnets[i]);
+
+				//add to cache
+				await torrentCache.addMagnet(magnets[i]);
+			}
+			catch(e) {
+				console.log('unable to add magnet');
+				console.log(e);
+			}
+
 		}
 	}
 }

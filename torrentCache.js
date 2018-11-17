@@ -80,6 +80,10 @@ async function addMagnet(magnet){
 	return true;
 }
 
+function inCache(magnet){
+	return cache.has(magnet);
+}
+
 function insertIntoDb(magnet){
 	let stmt = `INSERT INTO torrents (magnet) VALUES (?)`;
 	return new Promise((res, rej) => {
@@ -106,5 +110,6 @@ function findInDb(magnet){
 
 module.exports = {
 	load: load,
+	inCache: inCache,
 	addMagnet: addMagnet
 };
