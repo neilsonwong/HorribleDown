@@ -17,7 +17,16 @@ Vue.component('topbar', {
 	template: `
 	<div class="topbar">
 		<h1 class="woah-the-colours">A Pretty Horrible Downloader</h1>
-	</div>`
+		<div>
+			<a class="right-button" href="#" v-on:click="changePort(8112)">Deluge</a>
+			<a class="right-button" href="https://neilson.pw/Torrents">Windrunner</a>
+		</div>
+	</div>`,
+	methods: {
+		changePort: function(port){
+			window.location.port = port;
+		}
+	}
 });
 
 Vue.component('seasonlisting', {
