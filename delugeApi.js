@@ -31,23 +31,31 @@ async function getCompletedTorrents(){
 		let torrents = parseDelugeInfo(infos);
 		return torrents.filter(torrent => torrent.isCompleted);
 	}
-	catch (e){
+	catch (e) {
 		console.log(e);
 		return [];
 	}
 };
 
 async function removeCompletedTorrents(){
-	let done = await getCompletedTorrents();
-	for (let i = 0; i < done.length; ++i){
-		try {
-			await exec(COMMANDS.RM(done[i].id));
-			console.log(`removed ${done[i].name}`);
-		}
-		catch (e){
-			console.log(e);
+	let removed = [];
+	try {
+		let done = await getCompletedTorrents();
+		for (let i = 0; i < done.length; ++i){
+			try {
+				await exec(COMMANDS.RM(done[i].id));
+				console.log(`removed ${done[i].name}`);
+				removed.push(done[i].name);
+			}
+			catch (e) {
+				console.log(e);
+			}
 		}
 	}
+	catch (e) {
+		console.log(e);
+	}
+	return removed;
 }
 
 async function downloadTorrent(magnetLink){
@@ -114,7 +122,6 @@ function TorrentState(name, id, state, completion, seedTime) {
 }
 
 module.exports = {
-	getCompletedTorrents: getCompletedTorrents,
-	removeCompletedTorrents: removeCompletedTorrents,
-	downloadTorrent: downloadTorrent
+	clearCompleted: removeCompletedTorrents,
+	download: downloadTorrent
 };

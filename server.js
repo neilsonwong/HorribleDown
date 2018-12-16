@@ -4,8 +4,8 @@
 const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
-const horribleApi = require('./horribleApi');
 
+const following = require('./following');
 const config = require('./config');
 
 //setup app
@@ -29,13 +29,13 @@ app.get('/styles.css', (req, res) => {
 
 //add api calls
 app.get('/currentSeason', async (req, res) => {
-	let shows = await horribleApi.getCurrentSeason();
+	let shows = await following.getCurrentSeasonWithFollowData();
 	res.json(shows);
 });
 
 app.put('/updateFollowing', async (req, res) => {
 	console.log(req.body);
-	await horribleApi.updateFollowing(req.body);
+	await following.update(req.body.series, req.body.following);
 });
 
 function start(){

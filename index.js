@@ -1,50 +1,41 @@
 "use strict";
 
 const config = require('./config');
-const horribleApi = require('./horribleApi');
 const delugeApi = require('./delugeApi');
-const torrentCache = require('./torrentCache');
+const torrentDatabase = require('./torrentDatabase');
+const following = require('./following');
 const ui = require('./server');
 
+let loops = 0;
+
 async function main(){
+	await init();
+	// setInterval(mainLoop, config.MAIN_LOOP_INTERVAL);
+	return;
+}
+
+async function init(){
+	//load database
+	await torrentDatabase.load();
+	await following.load();
+	console.log('db init complete');
+
 	//start webserver
 	ui.start();
-
-	await torrentCache.load();
-	setInterval(mainLoop, config.MAIN_LOOP_INTERVAL);
+	console.log('web ui started');
 }
 
 async function mainLoop(){
-	console.log('looping');
-	console.log(process.memoryUsage().heapUsed);
-	let currentShows = await horribleApi.getFollowing();
+	console.log(`loop ${loops++}: ${process.memoryUsage().heapUsed}`);
 
 	//clear old torrents
-	await delugeApi.removeCompletedTorrents();
+	let cleared = await delugeApi.clearCompleted();
 
-	//check for new torrents to add
-	let magnets = await horribleApi.getFilteredMagnets(currentShows, config.RESOLUTION);
+	//pull new torrents from rss and archive them
+	await torrentDatabase.updateMagnets();
 
-	let notInCache;
-	for (let i = 0; i < magnets.length; ++i){
-		//change logic structure
-		//check cache
-		if (torrentCache.inCache(magnets[i]) === false){
-			//not in cache
-			//add torrent
-			try {
-				await delugeApi.downloadTorrent(magnets[i]);
-
-				//add to cache
-				await torrentCache.addMagnet(magnets[i]);
-			}
-			catch(e) {
-				console.log('unable to add magnet');
-				console.log(e);
-			}
-
-		}
-	}
+	//download new torrents
+	await torrentDatabase.downloadFreshTorrents();
 }
 
 main();
