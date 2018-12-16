@@ -86,16 +86,19 @@ Vue.component('show', {
 	</div>`,
 	methods: {
 		updateCurrentSeason: function(change, value){
-			let diff = {};
 			if (change === 'add') {
 				this.data.following = true;
-				diff[value] = true;
-				updateFollowing(diff);
+				updateFollowing({
+					series: value, 
+					following: true
+				});
 			}
 			else if (change === 'remove'){
 				this.data.following = false;
-				diff[value] = false;
-				updateFollowing(diff);
+				updateFollowing({
+					series: value, 
+					following: false
+				});
 			}
 		}
 	}
