@@ -1,0 +1,10 @@
+{
+	"DEV_MODE": false,
+	"UI_PORT": 3999,
+	"CURRENT_SHOWS_URL": "https://horriblesubs.info/current-season/",
+	"RSS_FEED_URL": "http://horriblesubs.info/rss.php?res=1080",
+	"RESOLUTION": 1080,
+	"MAIN_LOOP_INTERVAL": 10000,
+	"DB_PATH": "./database.db",
+	"TORRENT_FOLDER": "/home/neilson/Seagate/Torrents"
+}
