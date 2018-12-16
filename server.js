@@ -8,6 +8,8 @@ const bodyParser = require('body-parser');
 const following = require('./following');
 const config = require('./config');
 
+const torrentDatabase = require('./torrentDatabase');
+
 //setup app
 const app = express();
 
@@ -34,9 +36,14 @@ app.get('/currentSeason', async (req, res) => {
 });
 
 app.put('/updateFollowing', async (req, res) => {
-	console.log(req.body);
 	await following.update(req.body.series, req.body.following);
 });
+
+// app.get('/missing', async (req, res) => {
+// 	console.log('missing');
+// 	let a = await torrentDatabase.getUndownloadedTorrents();
+// 	res.json(a);
+// });
 
 function start(){
 	app.listen(config.UI_PORT, () => {

@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const config = require('./config');
 const database = require('./database');
-const Torrent = require('./Torrent');
+const Torrent = require('./torrent');
 const horribleApi = require('./horribleApi');
 const delugeApi = require('./delugeApi');
 
@@ -103,7 +103,7 @@ async function downloadTorrent(torrent){
 	await updateTorrentStatus(torrent, 1);
 
 	//download
-	//console.log("we are downloading " + torrent.title);
+	console.log("downloading " + torrent.title);
 	await delugeApi.download(torrent.magnet);
 }
 
@@ -122,7 +122,7 @@ async function checkIfAlreadyDownloaded(torrent){
 	//check in fs
 	let exists = await fileExistsInFinalDestination(torrent.title);
 	if (exists) {
-		await updateTorrentCompletion(title);
+		await updateTorrentCompletion(torrent.title);
 	}
 
 	return exists;
@@ -200,4 +200,5 @@ module.exports = {
 	load: load,
 	updateMagnets: updateMagnets,
 	downloadFreshTorrents: downloadFreshTorrents,
+	// getUndownloadedTorrents: getUndownloadedTorrents,
 };

@@ -31,7 +31,7 @@ async function load(){
 
 async function updateFollowing(series, following){
 	let bFollow = following ? 1 : 0;
-	console.log(`updating ${series} to follwing: ${bFollow}`);
+	console.log(`updating ${series} to following: ${bFollow}`);
 	let stmt = `INSERT INTO following (series, following) 
 				VALUES ($series, $following)
 				ON CONFLICT(series)
@@ -49,7 +49,6 @@ async function updateFollowing(series, following){
 
 async function isFollowing(series){
 	let query = `SELECT COUNT(*) AS isFollowing FROM following WHERE series = $series AND following = $bVal`;
-	console.log(query)
 	return new Promise((res, rej) => {
 		db.get(query, {$series: series, $bVal: 1}, (err, row) => {
 			if (err){
@@ -63,7 +62,6 @@ async function isFollowing(series){
 
 async function getFollowing(){
 	let query = `SELECT series FROM following WHERE following = 1`;
-	console.log(query)
 	return new Promise((res, rej) => {
 		db.all(query, (err, row) => {
 			if (err){
