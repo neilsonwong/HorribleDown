@@ -120,9 +120,11 @@ async function checkIfAlreadyDownloaded(torrent){
 	}
 
 	//check in fs
-	let exists = await fileExistsInFinalDestination(torrent.title);
+	let finalDestinationPath = path.join(config.TORRENT_FOLDER, torrent.title);
+	let exists = await fileExists(finalDestinationPath);
 	if (exists) {
-		await updateTorrentCompletion(torrent.title);
+		//old logic
+		await updateTorrentCompletion(torrent.title, finalDestinationPath);
 	}
 
 	return exists;
@@ -152,9 +154,7 @@ function updateTorrentStatus(torrent, status){
 	});
 }
 
-function updateTorrentCompletion(title) {
-	let newPath = path.join(config.TORRENT_FOLDER, title);
-
+function updateTorrentCompletion(title, newPath) {
 	let stmt = `UPDATE torrents SET status = 2, localLocation = ? WHERE title = ?`;
 	return new Promise((res, rej) => {
 		db.run(stmt, [newPath, title], err => {
@@ -166,8 +166,7 @@ function updateTorrentCompletion(title) {
 	});
 }
 
-async function fileExistsInFinalDestination(title){
-	let newPath = path.join(config.TORRENT_FOLDER, title);
+async function fileExists(title){
 	let exists = await new Promise((res, rej) => {
 		fs.access(newPath, fs.constants.F_OK, (err) => {
 			res(err ? false : true);
@@ -200,5 +199,6 @@ module.exports = {
 	load: load,
 	updateMagnets: updateMagnets,
 	downloadFreshTorrents: downloadFreshTorrents,
+	updateTorrentCompletion: updateTorrentCompletion,
 	// getUndownloadedTorrents: getUndownloadedTorrents,
 };

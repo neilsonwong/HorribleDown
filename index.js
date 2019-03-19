@@ -4,6 +4,7 @@ const config = require('./config');
 const delugeApi = require('./delugeApi');
 const torrentDatabase = require('./torrentDatabase');
 const following = require('./following');
+const cleanUp = require('./cleanUp');
 const ui = require('./server');
 
 let loops = 0;
@@ -30,6 +31,9 @@ async function mainLoop(){
 
 	//clear old torrents
 	let cleared = await delugeApi.clearCompleted();
+
+	//clean out torrentDirectory
+	await cleanUp.torrentsDirectory();
 
 	//pull new torrents from rss and archive them
 	await torrentDatabase.updateMagnets();
