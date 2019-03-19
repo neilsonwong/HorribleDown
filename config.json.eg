@@ -4,7 +4,8 @@
 	"CURRENT_SHOWS_URL": "https://horriblesubs.info/current-season/",
 	"RSS_FEED_URL": "https://horriblesubs.info/rss.php?res=1080",
 	"MAIN_LOOP_INTERVAL": 300000,
-	"DB_PATH": "./database.db"
+	"DB_PATH": "./database.db",
 	"RESOLUTION": 1080,
-	"TORRENT_FOLDER": "/home/neilson/Seagate/Torrents"
+	"TORRENT_FOLDER": "/home/neilson/Seagate/Torrents",
+	"CATALOGUE_FOLDER": "/home/neilson/Seagate/Anime"
 }
