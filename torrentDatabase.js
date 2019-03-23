@@ -166,7 +166,7 @@ function updateTorrentCompletion(title, newPath) {
 	});
 }
 
-async function fileExists(title){
+async function fileExists(newPath){
 	let exists = await new Promise((res, rej) => {
 		fs.access(newPath, fs.constants.F_OK, (err) => {
 			res(err ? false : true);

@@ -38,10 +38,17 @@ async function bruteForceMove(title){
 	
 	//check if parsed correctly
 	if (parsedItem.series !== ""){
-		let newLocation = await moveFileToCatalogue(title, parsedItem.series);
-		await torrentDatabase.updateTorrentCompletion(title, newLocation);
-
-		console.log('we done with ' + newLocation);
+		console.log(`series is ${parsedItem.series}`);
+		try {
+			let newLocation = await moveFileToCatalogue(title, parsedItem.series);
+			await torrentDatabase.updateTorrentCompletion(title, newLocation);
+			console.log('we done with ' + newLocation);
+		}
+		catch(error){
+			console.log('error while moving from torrent to catalogue')
+			console.log(title);
+			console.log(error);
+		}
 	}
 }
 
