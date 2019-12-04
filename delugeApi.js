@@ -3,9 +3,9 @@
 const exec = require('child_process').exec;
 
 let COMMANDS = {
-	'INFO': `deluge-console 'info'`,
+	'INFO': `deluge-console 'info --verbose'`,
 	'ADD': (magnetLink) => (`deluge-console "add '${magnetLink}'"`),
-	'RM': (torrentId) => (`deluge-console "rm '${torrentId}'"`)
+	'RM': (torrentId) => (`deluge-console "rm -c '${torrentId}'"`)
 };
 
 async function delugeInfo(){
@@ -44,6 +44,7 @@ async function removeCompletedTorrents(){
 		for (let i = 0; i < done.length; ++i){
 			try {
 				await exec(COMMANDS.RM(done[i].id));
+				console.log(done[i].id);
 				console.log(`removed ${done[i].name}`);
 				removed.push(done[i].name);
 			}
@@ -82,14 +83,17 @@ function parseDelugeInfo(infoString){
 		if (lines[i].startsWith('Name: ') && 
 			lines[i+1].startsWith('ID: ') &&
 			lines[i+2].startsWith('State: ') &&
-			lines[i+4].startsWith('Size: ') && 
-			lines[i+5].startsWith('Seed time: ')){	//size is completion
+			lines[i+3].startsWith('Seeds: ') &&
+			lines[i+4].startsWith('Size: ') &&
+			lines[i+5].startsWith('ETA: ')) {
+//			lines[i+4].startsWith('Size: ') && 
+//			lines[i+5].startsWith('Seed time: ')){	//size is completion
 
 			let name = lines[i].substring(6),
 				id = lines[i+1].substring(4),
 				state = lines[i+2].substring(7),
 				completion = lines[i+4].substring(6),
-				seedTime = lines[i+5].substring(6);
+				seedTime = lines[i+5];
 
 			torrents.push(new TorrentState(name, id, state, completion, seedTime));
 
@@ -111,14 +115,17 @@ function TorrentState(name, id, state, completion, seedTime) {
 	this.seedTimeInfo = seedTime;
 
 	//get seedTime
-	let seedTimeStart = seedTime.indexOf('days');
-	let seededFor = seedTime.substring(seedTimeStart + 5, seedTimeStart + 13);
-	let seededMoreThanOneMinute = seededFor > "00:01:00";
+	let seedTimeStart = seedTime.indexOf('Seeding');
+	let seedTimeEnd = seedTime.indexOf('Active');
+	let seededFor = seedTime.substring(seedTimeStart + 9, seedTimeEnd);
+	let seededMoreThanOneMinute = seededFor.indexOf('m') > -1 || seededFor.indexOf('h') > -1 || seededFor.indexOf('d') > -1;
 
 	//get size and completeness
-	let temp = completion.split('/');
-	this.size = temp[0];
-	this.isCompleted = temp[1].startsWith(this.size) && seededMoreThanOneMinute;
+	let dlIndex = completion.indexOf('Downloaded: ');
+	let ulIndex = completion.indexOf('Uploaded: ');
+	let downloaded = completion.substring(dlIndex + 12, ulIndex).trim();
+	this.size = completion.substring(0, dlIndex).trim();
+	this.isCompleted = (downloaded >= this.size) && seededMoreThanOneMinute;
 }
 
 module.exports = {
