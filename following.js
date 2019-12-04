@@ -1,6 +1,7 @@
 "use strict";
 
 const database = require('./database');
+const torrentDatabase = require('./torrentDatabase');
 const horribleApi = require('./horribleApi');
 
 let db;
@@ -86,9 +87,22 @@ async function getCurrentSeasonWithFollowData(){
 	return mySeason;
 }
 
+async function getArchivedWithFollowData() {
+	let archived = await torrentDatabase.getArchivedSeries();
+	let cache = await getFollowing();
+	let shows = archived.map(show => {
+		return {
+			title: show.series,
+			following: cache.includes(show.series)
+		};
+	});
+	return shows;
+}
+
 module.exports = {
 	'update': updateFollowing,
 	'load': load,
 	'isFollowing': isFollowing,
-	'getCurrentSeasonWithFollowData': getCurrentSeasonWithFollowData
+	'getCurrentSeasonWithFollowData': getCurrentSeasonWithFollowData,
+	'getArchivedWithFollowData': getArchivedWithFollowData,
 }

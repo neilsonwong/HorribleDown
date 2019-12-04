@@ -45,6 +45,7 @@ li {
     margin: 10px 0;
 }
 
+.archive-listing,
 .season-listing {
 	width: 50%;
 	min-width: 700px;
@@ -53,6 +54,7 @@ li {
 	box-shadow: 1px 1px 4px #CCCCCC;
 }
 
+.archive-name,
 .season-name {
 	color: #DA4453;
 	font-weight: 700;

@@ -166,6 +166,18 @@ function updateTorrentCompletion(title, newPath) {
 	});
 }
 
+function getArchivedSeries() {
+	let query = `SELECT DISTINCT series FROM torrents`;
+	return new Promise((res, rej) => {
+		db.all(query, (err, row) => {
+			if (err){
+				console.log(err);
+			}
+			res(row);
+		});
+	});
+}
+
 async function fileExists(newPath){
 	let exists = await new Promise((res, rej) => {
 		fs.access(newPath, fs.constants.F_OK, (err) => {
@@ -201,4 +213,5 @@ module.exports = {
 	downloadFreshTorrents: downloadFreshTorrents,
 	updateTorrentCompletion: updateTorrentCompletion,
 	// getUndownloadedTorrents: getUndownloadedTorrents,
+	getArchivedSeries: getArchivedSeries,
 };

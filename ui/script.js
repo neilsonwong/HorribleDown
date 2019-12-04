@@ -1,18 +1,5 @@
 /* define vue components */
-new Vue({
-	el: '#root',
-	data: {
-		currentSeason: []
-	},
-	components: {
-
-	},
-	async created() {
-		this.currentSeason = await getCurrentSeason();
-	}
-});
-
-Vue.component('topbar', {
+let topbar = Vue.component('topbar', {
 	props: [],
 	template: `
 	<div class="topbar">
@@ -29,7 +16,7 @@ Vue.component('topbar', {
 	}
 });
 
-Vue.component('seasonlisting', {
+let seasonlisting = Vue.component('seasonlisting', {
 	props: ['data'],
 	data: function() {
 		let today = new Date();
@@ -56,6 +43,19 @@ Vue.component('seasonlisting', {
 	template: `
 	<div class="season-listing">
 		<h2 class="season-name">{{ season }} {{ year }}</h2>
+		<ul>
+			<li v-for="series in data">
+				<show v-bind:key="series.title" v-bind:data="series" ></show>
+			</li>
+		</ul>
+	</div>`
+});
+
+let archivelisting = Vue.component('archivelisting', {
+	props: ['data'],
+	template: `
+	<div class="archive-listing">
+		<h2 class="archive-name">A R C H I V E</h2>
 		<ul>
 			<li v-for="series in data">
 				<show v-bind:key="series.title" v-bind:data="series" ></show>
@@ -122,6 +122,23 @@ function getCurrentSeason(){
 		}));
 }
 
+function getArchived(){
+	//fetch already a promise
+	return fetch('archived')
+		.then(response => response.json())
+		.then(shows => shows.sort((a, b) => {
+			if (a.following === true && b.following === false){
+				return -1;
+			}
+			else if (b.following === true && a.following === false){
+				return 1;
+			}
+			else {
+				return a.title > b.title ? 1 : -1;
+			}
+		}));
+}
+
 function updateFollowing(updatedChanges){
 	//fire and forget for now? tehe?
 	console.log(updatedChanges)
@@ -133,3 +150,21 @@ function updateFollowing(updatedChanges){
 		body: JSON.stringify(updatedChanges)
 	});
 }
+
+new Vue({
+	el: '#root',
+	data: {
+		currentSeason: [],
+		archivedSeries: []
+	},
+	components: {
+		topbar: topbar,
+		seasonlisting: seasonlisting,
+		archivelisting: archivelisting
+	},
+	async created() {
+		this.currentSeason = await getCurrentSeason();
+		this.archivedSeries = await getArchived();
+	}
+});
+

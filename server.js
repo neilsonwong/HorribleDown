@@ -35,6 +35,11 @@ app.get('/currentSeason', async (req, res) => {
 	res.json(shows);
 });
 
+app.get('/archived', async (req, res) => {
+	let shows = await following.getArchivedWithFollowData();
+	res.json(shows);
+});
+
 app.put('/updateFollowing', async (req, res) => {
 	await following.update(req.body.series, req.body.following);
 });
