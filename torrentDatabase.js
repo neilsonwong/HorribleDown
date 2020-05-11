@@ -191,7 +191,7 @@ function getUndownloadedTorrents(){
 	let resolution = config.RESOLUTION;
 	let query = `SELECT * from torrents 
 		INNER JOIN following 
-		ON following.series LIKE '%'||torrents.series||'%'
+		ON following.series LIKE torrents.series||'%'
 		WHERE following.following = 1
 		AND torrents.status = 0
 		AND torrents.localLocation is null
