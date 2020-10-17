@@ -1,6 +1,7 @@
 "use strict";
 
 const fs = require('fs');
+const mv = require('mv');
 const path = require('path');
 const config = require('./config');
 const torrentDatabase = require('./torrentDatabase');
@@ -104,7 +105,7 @@ function fsMkdirpPromise(folder){
 
 function fsRenamePromise(src, dest){
 	return new Promise((res, rej) => {
-		fs.rename(src, dest, (err) => {
+		mv(src, dest, (err) => {
 			if (err) {
 				return rej(err);
 			}
