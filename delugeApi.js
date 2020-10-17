@@ -1,11 +1,17 @@
 "use strict";
 
 const exec = require('child_process').exec;
+const config = require('./config.json');
+
+const USER = config.DELUGE_USER;
+const PW = config.DELUGE_PW;
+
+const credentials = (USER && PW) ?	`-U ${USER} -P ${PW}` : '';
 
 let COMMANDS = {
-	'INFO': `deluge-console 'info --verbose'`,
-	'ADD': (magnetLink) => (`deluge-console "add '${magnetLink}'"`),
-	'RM': (torrentId) => (`deluge-console "rm -c '${torrentId}'"`)
+	'INFO': `deluge-console ${credentials} 'info --verbose'`,
+	'ADD': (magnetLink) => (`deluge-console ${credentials} "add '${magnetLink}'"`),
+	'RM': (torrentId) => (`deluge-console ${credentials} "rm -c '${torrentId}'"`)
 };
 
 async function delugeInfo(){

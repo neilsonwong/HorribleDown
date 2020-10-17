@@ -25,7 +25,7 @@ async function getCurrentShows(){
 				await request.get(config.CURRENT_SHOWS_URL);
 
 			//parse the response
-			let currentShows = await ripCurrentFromPage(response);
+			let currentShows = await ripCurrentFromPage2(response);
 
 			//update cache
 			cache.currentShows = {
@@ -38,6 +38,26 @@ async function getCurrentShows(){
 	catch(e){
 		console.log(e);
 	}
+}
+
+// new version to support subsplease
+async function ripCurrentFromPage2(page){
+	let $ = cheerio.load(page);
+	let indShowDivs = $(".all-shows-link").toArray();
+	return indShowDivs.map((div) => {
+		if (div.children[0]){
+			if (div.children[0].attribs){
+				return div.children[0].attribs.title;
+			}
+			else {
+				console.log('weird case');
+				console.log(JSON.stringify(div.children[0].attribs));
+			}
+		}
+		else {
+			console.log("no a href child in ind-show");
+		}
+	});
 }
 
 //returns an array of strings as current show
