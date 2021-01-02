@@ -25,6 +25,9 @@ function parseFilename2(file) {
 	if (parsed.video_resolution.endsWith('p')) {
 		parsed.video_resolution = parsed.video_resolution.slice(0, -1);
 	}
+	if (parsed.release_information && parsed.release_information.toUpperCase() === 'BATCH') {
+		return {};
+	}
 	return {
 		'series': parsed.anime_title,
 		'episode': parsed.episode_number,
