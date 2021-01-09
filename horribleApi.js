@@ -3,7 +3,7 @@
 //api to horrible subs
 const fs = require('fs');
 const cheerio = require('cheerio');
-const request = require('request-promise-native');
+const axios = require('axios');
 const parseString = require('xml2js').parseString;
 
 const config = require('./config');
@@ -22,10 +22,10 @@ async function getCurrentShows(){
 		else {
 			let response = config.DEV_MODE ? 
 				fs.readFileSync("current.html") : 
-				await request.get(config.CURRENT_SHOWS_URL);
+				await axios.get(config.CURRENT_SHOWS_URL);
 
 			//parse the response
-			let currentShows = await ripCurrentFromPage2(response);
+			let currentShows = await ripCurrentFromScheduleApi(response.data);
 
 			//update cache
 			cache.currentShows = {
@@ -36,8 +36,27 @@ async function getCurrentShows(){
 		}
 	}
 	catch(e){
-		console.log(e);
+		console.error(e);
 	}
+}
+
+// new version to support subsplease schedule api
+async function ripCurrentFromScheduleApi(data){
+	const currentShows = [];
+	if (data && data.schedule) {
+		// concat all the days into one array
+		for (const weekday in data.schedule) {
+			const airsOnWeekday = data.schedule[weekday].map(showObj => {
+				return showObj.title;
+			});
+			currentShows.push(...airsOnWeekday);
+		}
+	}
+	else {
+		console.error('schedule does not exist in returned data');
+	}
+	const sortedShows = currentShows.sort();
+	return sortedShows;
 }
 
 // new version to support subsplease
@@ -95,7 +114,7 @@ async function ripCurrentFromPage(page){
 		});
 	}
 	catch(e){
-		console.log(e);
+		console.error(e);
 	}
 }
 
@@ -103,11 +122,11 @@ async function getRssFeed(){
 	try {
 		let response = /*config.DEV_MODE ? 
 			fs.readFileSync("rss.xml") : */
-			await request.get(config.RSS_FEED_URL);
-		return response;
+			await axios.get(config.RSS_FEED_URL);
+		return response.data;
 	}
 	catch(e){
-		console.log(e);
+		console.error(e);
 	}
 }
 
@@ -120,7 +139,7 @@ async function getAllMagnets(){
 		return items.map(m => (new Torrent(m.title[0], m.link[0], m.pubDate[0])));
 	}
 	catch(e){
-		console.log(e);
+		console.error(e);
 	}
 }
 
@@ -147,7 +166,7 @@ async function getFilteredMagnets(shows, resolution){
 		}).map(item => (item.link[0]));
 	}
 	catch(e){
-		console.log(e);
+		console.error(e);
 	}
 }
 
