@@ -12,6 +12,7 @@ let loops = 0;
 async function main(){
 	await init();
 	setInterval(mainLoop, config.MAIN_LOOP_INTERVAL);
+	mainLoop();
 	return;
 }
 

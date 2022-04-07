@@ -2,6 +2,7 @@
 	"DEV_MODE": false,
 	"UI_PORT": 3999,
 	"CURRENT_SHOWS_URL": "https://horriblesubs.info/current-season/",
+	"CURRENT_SHOWS_API_URL": "https://subsplease.org/api/?f=schedule&tz=America/Toronto",
 	"RSS_FEED_URL": "https://horriblesubs.info/rss.php?res=1080",
 	"MAIN_LOOP_INTERVAL": 300000,
 	"DB_PATH": "./database.db",

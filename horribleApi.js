@@ -22,7 +22,7 @@ async function getCurrentShows(){
 		else {
 			let response = config.DEV_MODE ? 
 				fs.readFileSync("current.html") : 
-				await axios.get(config.CURRENT_SHOWS_URL);
+				await axios.get(config.CURRENT_SHOWS_API_URL);
 
 			//parse the response
 			let currentShows = await ripCurrentFromScheduleApi(response.data);
@@ -54,6 +54,7 @@ async function ripCurrentFromScheduleApi(data){
 	}
 	else {
 		console.error('schedule does not exist in returned data');
+		console.log(data);
 	}
 	const sortedShows = currentShows.sort();
 	return sortedShows;
